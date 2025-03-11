@@ -27,7 +27,7 @@ Import the SmartFace class and use it for emotion detection.
 
 ### Running on Video
 ```python
-from smartface import SmartFace
+from SmartFace import SmartFace
 import cv2
 
 # Load the model
@@ -42,7 +42,7 @@ smartFace.stream(video)
 ### Running on Image
 ```python
 import cv2
-from smartface import SmartFace
+from SmartFace import SmartFace
 
 modelPath = "Face_Emotion_Model.h5" # Make sure to include the model to your project directory or provide the path to the model
 smartFace = SmartFace(modelPath)
@@ -58,7 +58,7 @@ print(result)
 ### Running on Image with bounding box
 ```python
 import cv2
-from smartface import SmartFace
+from SmartFace import SmartFace
 
 modelPath = "Face_Emotion_Model.h5" # Make sure to include the model to your project directory or provide the path to the model
 smartFace = SmartFace(modelPath)
