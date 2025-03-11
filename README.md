@@ -16,4 +16,5 @@ First, clone this repository:
 git clone https://github.com/yourusername/SmartFace.git
 cd SmartFace
 
+Then, install the required dependencies:
 pip install -r requirements.txt
