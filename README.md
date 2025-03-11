@@ -4,7 +4,7 @@ SmartFace is a Python library for real-time face emotion analysis using a Convol
 
 ## Features
 - Detects faces in images and videos
-- Predicts emotions such as Angry, Happy, Sad, Neutral, etc.
+- Predicts emotions such as Angry, Disgust, Fear, Happy, Neutral, Sad, and Surprise.
 - Draws bounding boxes and labels emotions on detected faces
 - Supports real-time emotion detection via webcam
 
