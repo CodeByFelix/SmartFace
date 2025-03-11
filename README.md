@@ -55,8 +55,25 @@ result = smartFace.analyze(image)
 print(result)
 ```
 
+### Running on Image with bounding box
+```python
+import cv2
+from smartface import SmartFace
+
+modelPath = "Face_Emotion_Model.h5" # Make sure to include the model to your project directory or provide the path to the model
+smartFace = SmartFace(modelPath)
+
+# Load an image
+image = cv2.imread("path/to/image.jpg")
+resultImage = smartFace.analyzeDraw(image)
+
+# Showing the image
+cv2.imshow ('Image', resultImage)
+cv2.waitKey (0)
+```
+
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
 
 ## Contributing
 Feel free to submit issues or pull requests to improve the project!
