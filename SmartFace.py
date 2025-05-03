@@ -90,12 +90,12 @@ class SmartFace:
         Returns:
             list: List of dictionaries containing emotions and bounding box data.
         """
-        faceImages = self.detectFaces(image)
+        faceImages = self._detectFaces(image)
         
         faceEmotion =[]
         for face, bbox in faceImages:
-            img = self.imagePreprocess(face)
-            emotion, dominant_emotion = self.predictEmotion (img)
+            img = self._imagePreprocess(face)
+            emotion, dominant_emotion = self._predictEmotion (img)
             emo = {
                 'emotions': emotion,
                 'dominant_emotion': dominant_emotion,
@@ -115,11 +115,11 @@ class SmartFace:
         Returns:
             np.ndarray: Image with bounding boxes and emotions drawn.
         """
-        faceImages = self.detectFaces(image)
+        faceImages = self._detectFaces(image)
         
         for face, bbox in faceImages:
-            img = self.imagePreprocess(face)
-            emotion, dominant_emotion = self.predictEmotion (img)
+            img = self._imagePreprocess(face)
+            emotion, dominant_emotion = self._predictEmotion (img)
             
             x, y, w, h = bbox
             font = cv2.FONT_HERSHEY_COMPLEX_SMALL
@@ -156,11 +156,11 @@ class SmartFace:
             ret, frame = video.read()
             
             if ret:
-                faceImages = self.detectFaces(frame)
+                faceImages = self._detectFaces(frame)
                 
                 for face, bbox in faceImages:
-                    img = self.imagePreprocess(face)
-                    emotion, dominant_emotion = self.predictEmotion (img)
+                    img = self._imagePreprocess(face)
+                    emotion, dominant_emotion = self._predictEmotion (img)
                     
                     x, y, w, h = bbox
                     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
