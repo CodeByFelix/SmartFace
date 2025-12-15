@@ -12,18 +12,18 @@ Version: 1.0.0
 
 import cv2
 import numpy as np
-from tensorflow.keras.models import load_model
+import tensorflow as tf
 
 
 class SmartFace:
-    def __init__ (self, modelPath: str):
+    def __init__ (self, modelPath: str = "models/Face_Emotion_Model.h5"):
         """
         Initializes the SmartFace class.
 
         Args:
             model_path (str): Path to the pre-trained model file.
         """
-        self.faceEmotion = load_model(modelPath)
+        self.faceEmotion = tf.keras.models.load_model(modelPath)
         self.cascadePath = 'haarcascade_frontalface_default.xml'
         self.faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + self.cascadePath)
     
