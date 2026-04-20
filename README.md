@@ -27,29 +27,29 @@ Import the SmartFace class and use it for emotion detection.
 
 ### Running on Video
 ```python
-from src.SmartFace import SmartFace
+from src.smart_face import SmartFace
 import cv2
 
 # Load the model
-modelPath = "models/Face_Emotion_Model.h5" # Make sure to include the model to your project directory or provide the path to the model
-smartFace = SmartFace(modelPath)
+model_path = "models/Face_Emotion_Model.h5" # Make sure to include the model to your project directory or provide the path to the model
+smart_face = SmartFace(model_path)
 
 # Open webcam for real-time emotion detection
 video = cv2.VideoCapture(0)
-smartFace.stream(video)
+smart_face.stream(video)
 ```
 
 ### Running on Image
 ```python
 import cv2
-from src.SmartFace import SmartFace
+from src.smart_face import SmartFace
 
-modelPath = "models/Face_Emotion_Model.h5" # Make sure to include the model to your project directory or provide the path to the model
-smartFace = SmartFace(modelPath)
+model_path = "models/Face_Emotion_Model.h5" # Make sure to include the model to your project directory or provide the path to the model
+smart_face = SmartFace(model_path)
 
 # Load an image
 image = cv2.imread("path/to/image.jpg")
-result = smartFace.analyze(image)
+result = smart_face.analyze(image)
 
 # Print detected emotions
 print(result)
@@ -58,17 +58,17 @@ print(result)
 ### Running on Image with bounding box
 ```python
 import cv2
-from src.SmartFace import SmartFace
+from src.smart_face import SmartFace
 
-modelPath = "models/Face_Emotion_Model.h5" # Make sure to include the model to your project directory or provide the path to the model
-smartFace = SmartFace(modelPath)
+model_path = "models/Face_Emotion_Model.h5" # Make sure to include the model to your project directory or provide the path to the model
+smart_face = SmartFace(model_path)
 
 # Load an image
 image = cv2.imread("path/to/image.jpg")
-resultImage = smartFace.analyzeDraw(image)
+result_image = smart_face.analyze_draw(image)
 
 # Showing the image
-cv2.imshow ('Image', resultImage)
+cv2.imshow ('Image', result_image)
 cv2.waitKey (0)
 ```
 

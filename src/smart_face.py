@@ -16,18 +16,18 @@ import tensorflow as tf
 
 
 class SmartFace:
-    def __init__ (self, modelPath: str = "models/Face_Emotion_Model.h5"):
+    def __init__(self, model_path: str = "models/Face_Emotion_Model.h5"):
         """
         Initializes the SmartFace class.
 
         Args:
             model_path (str): Path to the pre-trained model file.
         """
-        self.faceEmotion = tf.keras.models.load_model(modelPath)
-        self.cascadePath = 'haarcascade_frontalface_default.xml'
-        self.faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + self.cascadePath)
+        self.face_emotion = tf.keras.models.load_model(model_path)
+        self.cascade_path = 'haarcascade_frontalface_default.xml'
+        self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + self.cascade_path)
     
-    def _imagePreprocess (self, image: np.ndarray) -> np.ndarray :
+    def _image_preprocess(self, image: np.ndarray) -> np.ndarray :
         """
         Preprocesses an image for model inference.
 
@@ -37,13 +37,13 @@ class SmartFace:
         Returns:
             np.ndarray: Processed image ready for model input.
         """
-        image = cv2.resize (image, (48, 48))
-        image = image.astype ('float32')
+        image = cv2.resize(image, (48, 48))
+        image = image.astype('float32')
         image = image/255.0
-        image = np.reshape (image, (1, 48, 48, 3))
+        image = np.reshape(image, (1, 48, 48, 3))
         return image
     
-    def _predictEmotion (self, image: np.ndarray) -> tuple[dict, str]:
+    def _predict_emotion(self, image: np.ndarray) -> tuple[dict, str]:
        """
         Predicts emotion from a preprocessed face image.
 
@@ -53,13 +53,13 @@ class SmartFace:
         Returns:
             tuple: Dictionary of emotion probabilities and the dominant emotion label.
         """
-       pred = self.faceEmotion.predict (image)
-       emotionList = ['Angry', 'Disgust', 'Fear', 'Happy', "Neutral", 'Sad', 'Surprise']
-       emotion = {emotionList[i]: round(pred[0][i]*100.0, 2) for i in range(len(emotionList))}
-       dominant_emotion = emotionList[np.argmax(pred)]
+       pred = self.face_emotion.predict(image)
+       emotion_list = ['Angry', 'Disgust', 'Fear', 'Happy', "Neutral", 'Sad', 'Surprise']
+       emotion = {emotion_list[i]: round(pred[0][i]*100.0, 2) for i in range(len(emotion_list))}
+       dominant_emotion = emotion_list[np.argmax(pred)]
        return emotion, dominant_emotion
     
-    def _detectFaces (self, image: np.ndarray) -> list:
+    def _detect_faces(self, image: np.ndarray) -> list:
         """
         Detects faces in an image using OpenCV's Haar cascade classifier.
 
@@ -69,18 +69,18 @@ class SmartFace:
         Returns:
             list: List of detected faces with bounding boxes.
         """
-        faceImages =[]
-        imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        faces = self.faceCascade.detectMultiScale (imageGray, scaleFactor=1.1, minNeighbors=4, minSize=(28, 28))
+        face_images =[]
+        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        faces = self.face_cascade.detectMultiScale(image_gray, scaleFactor=1.1, minNeighbors=4, minSize=(28, 28))
         
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         for (x, y, w, h) in faces:
             face = image[y:y+h, x:x+w]
-            faceImages.append([face, [x, y, w, h]])
+            face_images.append([face, [x, y, w, h]])
         
-        return faceImages
+        return face_images
         
-    def analyze (self, image: np.ndarray) -> list[dict]:
+    def analyze(self, image: np.ndarray) -> list[dict]:
         """
         Detects faces and predicts emotions for each face in an image.
 
@@ -90,22 +90,22 @@ class SmartFace:
         Returns:
             list: List of dictionaries containing emotions and bounding box data.
         """
-        faceImages = self._detectFaces(image)
+        face_images = self._detect_faces(image)
         
-        faceEmotion =[]
-        for face, bbox in faceImages:
-            img = self._imagePreprocess(face)
-            emotion, dominant_emotion = self._predictEmotion (img)
+        face_emotion =[]
+        for face, bbox in face_images:
+            img = self._image_preprocess(face)
+            emotion, dominant_emotion = self._predict_emotion(img)
             emo = {
                 'emotions': emotion,
                 'dominant_emotion': dominant_emotion,
                 'face':{'x':bbox[0], 'y':bbox[1], 'w':bbox[2], 'h':bbox[3]}
                 }
-            faceEmotion.append(emo)
+            face_emotion.append(emo)
             
-        return faceEmotion
+        return face_emotion
     
-    def analyzeDraw (self, image: np.ndarray) -> np.ndarray:
+    def analyze_draw(self, image: np.ndarray) -> np.ndarray:
         """
         Detects faces, predicts emotions, and draws results on the image.
 
@@ -115,37 +115,37 @@ class SmartFace:
         Returns:
             np.ndarray: Image with bounding boxes and emotions drawn.
         """
-        faceImages = self._detectFaces(image)
+        face_images = self._detect_faces(image)
         
-        for face, bbox in faceImages:
-            img = self._imagePreprocess(face)
-            emotion, dominant_emotion = self._predictEmotion (img)
+        for face, bbox in face_images:
+            img = self._image_preprocess(face)
+            emotion, dominant_emotion = self._predict_emotion(img)
             
             x, y, w, h = bbox
             font = cv2.FONT_HERSHEY_COMPLEX_SMALL
-            fontScale = 0.5
-            fontThickness = 1
-            textSize = cv2.getTextSize (dominant_emotion, font, fontScale, fontThickness)[0]
+            font_scale = 0.5
+            font_thickness = 1
+            text_size = cv2.getTextSize(dominant_emotion, font, font_scale, font_thickness)[0]
             
             if y <= 5.0:
-                t_tl = (x, y+textSize[1]+5)
-                t_br = (x+textSize[0], y) 
+                t_tl = (x, y+text_size[1]+5)
+                t_br = (x+text_size[0], y) 
                 cv2.rectangle(image, (x, y, w, h), (255, 0, 255), 2)
                 cv2.rectangle(image, t_tl, t_br, (255, 0, 255), cv2.FILLED)
-                cv2.putText (image, dominant_emotion, (x, y+textSize[1]), font, fontScale, (255, 255, 255), fontThickness)
+                cv2.putText(image, dominant_emotion, (x, y+text_size[1]), font, font_scale, (255, 255, 255), font_thickness)
                 
             
             else:
-                t_tl = (x, y-textSize[1]-5)
-                t_br = (x+textSize[0], y) 
+                t_tl = (x, y-text_size[1]-5)
+                t_br = (x+text_size[0], y) 
                 cv2.rectangle(image, (x, y, w, h), (255, 0, 255), 2)
                 cv2.rectangle(image, t_tl, t_br, (255, 0, 255), cv2.FILLED)
-                cv2.putText (image, dominant_emotion, (x, y-textSize[1]), font, fontScale, (255, 255, 255), fontThickness)
+                cv2.putText(image, dominant_emotion, (x, y-text_size[1]), font, font_scale, (255, 255, 255), font_thickness)
                 
             
         return image
             
-    def stream (self, video: cv2.VideoCapture):
+    def stream(self, video: cv2.VideoCapture):
         """
         Opens a video stream and applies real-time face emotion detection.
 
@@ -156,37 +156,36 @@ class SmartFace:
             ret, frame = video.read()
             
             if ret:
-                faceImages = self._detectFaces(frame)
+                face_images = self._detect_faces(frame)
                 
-                for face, bbox in faceImages:
-                    img = self._imagePreprocess(face)
-                    emotion, dominant_emotion = self._predictEmotion (img)
+                for face, bbox in face_images:
+                    img = self._image_preprocess(face)
+                    emotion, dominant_emotion = self._predict_emotion(img)
                     
                     x, y, w, h = bbox
                     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
-                    fontScale = 0.5
-                    fontThickness = 1
-                    textSize = cv2.getTextSize (dominant_emotion, font, fontScale, fontThickness)[0]
+                    font_scale = 0.5
+                    font_thickness = 1
+                    text_size = cv2.getTextSize(dominant_emotion, font, font_scale, font_thickness)[0]
                     
                     if y <= 5.0:
-                        t_tl = (x, y+textSize[1]+5)
-                        t_br = (x+textSize[0], y) 
+                        t_tl = (x, y+text_size[1]+5)
+                        t_br = (x+text_size[0], y) 
                         cv2.rectangle(frame, (x, y, w, h), (255, 0, 255), 2)
                         cv2.rectangle(frame, t_tl, t_br, (255, 0, 255), cv2.FILLED)
-                        cv2.putText (frame, dominant_emotion, (x, y+textSize[1]), font, fontScale, (255, 255, 255), fontThickness)
+                        cv2.putText(frame, dominant_emotion, (x, y+text_size[1]), font, font_scale, (255, 255, 255), font_thickness)
                         
                     
                     else:
-                        t_tl = (x, y-textSize[1]-5)
-                        t_br = (x+textSize[0], y) 
+                        t_tl = (x, y-text_size[1]-5)
+                        t_br = (x+text_size[0], y) 
                         cv2.rectangle(frame, (x, y, w, h), (255, 0, 255), 2)
                         cv2.rectangle(frame, t_tl, t_br, (255, 0, 255), cv2.FILLED)
-                        cv2.putText (frame, dominant_emotion, (x, y-textSize[1]), font, fontScale, (255, 255, 255), fontThickness)
+                        cv2.putText(frame, dominant_emotion, (x, y-text_size[1]), font, font_scale, (255, 255, 255), font_thickness)
                         
-                cv2.imshow ("Video", frame)
+                cv2.imshow("Video", frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
         
         cv2.destroyAllWindows()
         video.release()
-        
