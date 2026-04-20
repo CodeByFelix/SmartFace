@@ -68,8 +68,8 @@ image = cv2.imread("path/to/image.jpg")
 result_image = smart_face.analyze_draw(image)
 
 # Showing the image
-cv2.imshow ('Image', result_image)
-cv2.waitKey (0)
+cv2.imshow('Image', result_image)
+cv2.waitKey(0)
 ```
 
 ## License
